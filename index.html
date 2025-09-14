@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Master - Modern To-Do List App</title>
+    <meta name="description" content="Organize your tasks with style and efficiency using Task Master - a beautiful, modern to-do list application.">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        .container {
+            max-width: 64rem;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .logo-icon {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 0 2rem rgba(99, 102, 241, 0.4);
+        }
+
+        .title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            margin-bottom: 1.5rem;
+        }
+
+        .demo-btn {
+            background: transparent;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            color: #e2e8f0;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .demo-btn:hover {
+            background: rgba(99, 102, 241, 0.1);
+            border-color: rgba(99, 102, 241, 0.5);
+        }
+
+        .task-input-form {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .task-input {
+            flex: 1;
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            color: #e2e8f0;
+            padding: 0.75rem;
+            border-radius: 0.375rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .task-input:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 1rem rgba(99, 102, 241, 0.2);
+        }
+
+        .task-input::placeholder {
+            color: #64748b;
+        }
+
+        .add-btn {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+        }
+
+        .add-btn:hover {
+            box-shadow: 0 0 2rem rgba(99, 102, 241, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .add-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .tabs {
+            margin-bottom: 1.5rem;
+        }
+
+        .tab-list {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.25rem;
+            background: rgba(30, 41, 59, 0.3);
+            padding: 0.25rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            padding: 0.75rem 1rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .task-count {
+            background: rgba(30, 41, 59, 0.5);
+            color: #94a3b8;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 2rem;
+            color: #94a3b8;
+        }
+
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .task-card {
+            background: rgba(30, 41, 59, 0.3);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .task-card:hover {
+            box-shadow: 0 0 1rem rgba(99, 102, 241, 0.1);
+        }
+
+        .task-card.completed {
+            opacity: 0.75;
+        }
+
+        .task-header {
+            display: flex;
+            align-items: center;
+            justify-content: between;
+            gap: 0.75rem;
+        }
+
+        .task-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .task-name {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .task-name.completed {
+            text-decoration: line-through;
+            color: #94a3b8;
+        }
+
+        .task-dates {
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        .task-btn {
+            background: transparent;
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            color: #94a3b8;
+            padding: 0.375rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .task-btn:hover {
+            border-color: #6366f1;
+            color: #6366f1;
+        }
+
+        .task-btn.complete-btn:hover {
+            border-color: #10b981;
+            color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .task-btn.edit-btn:hover {
+            border-color: #f59e0b;
+            color: #f59e0b;
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        .task-btn.delete-btn:hover {
+            border-color: #ef4444;
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .task-btn.completed {
+            border-color: #10b981;
+            color: #10b981;
+            background: rgba(16, 185, 129, 0.2);
+        }
+
+        .edit-form {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .edit-input {
+            flex: 1;
+            background: rgba(30, 41, 59, 0.3);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            color: #e2e8f0;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            outline: none;
+        }
+
+        .save-btn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            border: none;
+            color: white;
+            padding: 0.375rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+        }
+
+        .cancel-btn {
+            background: transparent;
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            color: #94a3b8;
+            padding: 0.375rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+        }
+
+        .toast {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(30, 41, 59, 0.95);
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            max-width: 20rem;
+            z-index: 1000;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .toast-description {
+            color: #94a3b8;
+            font-size: 0.875rem;
+        }
+
+        .toast.error {
+            border-color: rgba(239, 68, 68, 0.5);
+        }
+
+        .toast.error .toast-title {
+            color: #ef4444;
+        }
+
+        .icon {
+            width: 1rem;
+            height: 1rem;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .icon-lg {
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg class="icon icon-lg" viewBox="0 0 24 24">
+                        <line x1="8" y1="6" x2="21" y2="6"></line>
+                        <line x1="8" y1="12" x2="21" y2="12"></line>
+                        <line x1="8" y1="18" x2="21" y2="18"></line>
+                        <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                        <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                        <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                    </svg>
+                </div>
+            </div>
+            <h1 class="title">Task Master</h1>
+            <p class="subtitle">Organize your tasks with style and efficiency</p>
+            <button class="demo-btn" onclick="loadDemoTasks()">
+                <svg class="icon" viewBox="0 0 24 24">
+                    <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path>
+                </svg>
+                For Demo Click
+            </button>
+        </div>
+
+        <!-- Task Input -->
+        <form class="task-input-form" onsubmit="addTask(event)">
+            <input 
+                type="text" 
+                class="task-input" 
+                placeholder="Add a new task..." 
+                id="taskInput"
+                required
+            />
+            <button type="submit" class="add-btn" id="addBtn">
+                <svg class="icon" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M8 12h8"></path>
+                    <path d="M12 8v8"></path>
+                </svg>
+                Add Task
+            </button>
+        </form>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <div class="tab-list">
+                <button class="tab-btn active" onclick="switchTab('pending')" id="pendingTab">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12,6 12,12 16,14"></polyline>
+                    </svg>
+                    Pending (<span id="pendingCount">0</span>)
+                </button>
+                <button class="tab-btn" onclick="switchTab('completed')" id="completedTab">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22,4 12,14.01 9,11.01"></polyline>
+                    </svg>
+                    Completed (<span id="completedCount">0</span>)
+                </button>
+                <button class="tab-btn" onclick="switchTab('all')" id="allTab">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <line x1="8" y1="6" x2="21" y2="6"></line>
+                        <line x1="8" y1="12" x2="21" y2="12"></line>
+                        <line x1="8" y1="18" x2="21" y2="18"></line>
+                        <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                        <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                        <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                    </svg>
+                    All Tasks (<span id="allCount">0</span>)
+                </button>
+            </div>
+
+            <!-- Tab Contents -->
+            <div id="pendingContent" class="tab-content active">
+                <div class="section-header">
+                    <svg class="icon" viewBox="0 0 24 24" style="color: #f59e0b;">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12,6 12,12 16,14"></polyline>
+                    </svg>
+                    <h2 class="section-title">Pending Tasks</h2>
+                    <span class="task-count" id="pendingBadge">0</span>
+                </div>
+                <div id="pendingTasks" class="task-list"></div>
+                <div id="pendingEmpty" class="empty-message">No pending tasks. Great job! 🎉</div>
+            </div>
+
+            <div id="completedContent" class="tab-content">
+                <div class="section-header">
+                    <svg class="icon" viewBox="0 0 24 24" style="color: #10b981;">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22,4 12,14.01 9,11.01"></polyline>
+                    </svg>
+                    <h2 class="section-title">Completed Tasks</h2>
+                    <span class="task-count" id="completedBadge">0</span>
+                </div>
+                <div id="completedTasks" class="task-list"></div>
+                <div id="completedEmpty" class="empty-message">No completed tasks yet. Keep going! 💪</div>
+            </div>
+
+            <div id="allContent" class="tab-content">
+                <div class="section-header">
+                    <svg class="icon" viewBox="0 0 24 24" style="color: #6366f1;">
+                        <line x1="8" y1="6" x2="21" y2="6"></line>
+                        <line x1="8" y1="12" x2="21" y2="12"></line>
+                        <line x1="8" y1="18" x2="21" y2="18"></line>
+                        <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                        <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                        <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                    </svg>
+                    <h2 class="section-title">All Tasks</h2>
+                    <span class="task-count" id="allBadge">0</span>
+                </div>
+                <div id="allTasks" class="task-list"></div>
+                <div id="allEmpty" class="empty-message">No tasks yet. Add your first task above! ✨</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let tasks = [];
+        let currentTab = 'pending';
+        let editingId = null;
+
+        function generateId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2);
+        }
+
+        function formatDate(date) {
+            return new Intl.DateTimeFormat('en-US', {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric',
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true
+            }).format(date);
+        }
+
+        function showToast(title, description, isError = false) {
+            const toast = document.createElement('div');
+            toast.className = `toast ${isError ? 'error' : ''}`;
+            toast.innerHTML = `
+                <div class="toast-title">${title}</div>
+                <div class="toast-description">${description}</div>
+            `;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => toast.classList.add('show'), 100);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => document.body.removeChild(toast), 300);
+            }, 3000);
+        }
+
+        function addTask(event) {
+            event.preventDefault();
+            const input = document.getElementById('taskInput');
+            const name = input.value.trim();
+            
+            if (!name) return;
+
+            const newTask = {
+                id: generateId(),
+                name,
+                completed: false,
+                createdAt: new Date()
+            };
+
+            tasks.push(newTask);
+            input.value = '';
+            
+            showToast('Task Added', `"${name}" has been added to your tasks.`);
+            renderTasks();
+        }
+
+        function toggleComplete(id) {
+            tasks = tasks.map(task => {
+                if (task.id === id) {
+                    return {
+                        ...task,
+                        completed: !task.completed,
+                        completedAt: !task.completed ? new Date() : undefined
+                    };
+                }
+                return task;
+            });
+            renderTasks();
+        }
+
+        function startEdit(id) {
+            editingId = id;
+            renderTasks();
+        }
+
+        function saveEdit(id, newName) {
+            if (!newName.trim()) return;
+            
+            tasks = tasks.map(task => 
+                task.id === id ? { ...task, name: newName.trim() } : task
+            );
+            
+            editingId = null;
+            showToast('Task Updated', `Task has been updated to "${newName.trim()}".`);
+            renderTasks();
+        }
+
+        function cancelEdit() {
+            editingId = null;
+            renderTasks();
+        }
+
+        function deleteTask(id) {
+            const task = tasks.find(t => t.id === id);
+            tasks = tasks.filter(t => t.id !== id);
+            
+            showToast('Task Deleted', `"${task.name}" has been deleted.`, true);
+            renderTasks();
+        }
+
+        function createTaskCard(task) {
+            const isEditing = editingId === task.id;
+            
+            return `
+                <div class="task-card ${task.completed ? 'completed' : ''}">
+                    <div class="task-header">
+                        <div class="task-content">
+                            ${isEditing ? `
+                                <div class="edit-form">
+                                    <input 
+                                        type="text" 
+                                        class="edit-input" 
+                                        value="${task.name}" 
+                                        id="editInput${task.id}"
+                                        onkeypress="if(event.key==='Enter') saveEdit('${task.id}', this.value)"
+                                    />
+                                    <button class="save-btn" onclick="saveEdit('${task.id}', document.getElementById('editInput${task.id}').value)">
+                                        <svg class="icon" viewBox="0 0 24 24">
+                                            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                            <polyline points="17,21 17,13 7,13 7,21"></polyline>
+                                            <polyline points="7,3 7,8 15,8"></polyline>
+                                        </svg>
+                                    </button>
+                                    <button class="cancel-btn" onclick="cancelEdit()">
+                                        <svg class="icon" viewBox="0 0 24 24">
+                                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                                        </svg>
+                                    </button>
+                                </div>
+                            ` : `
+                                <div class="task-name ${task.completed ? 'completed' : ''}">${task.name}</div>
+                                <div class="task-dates">
+                                    Created: ${formatDate(task.createdAt)}
+                                    ${task.completedAt ? `<br>Completed: ${formatDate(task.completedAt)}` : ''}
+                                </div>
+                            `}
+                        </div>
+                        
+                        ${!isEditing ? `
+                            <div class="task-actions">
+                                <button 
+                                    class="task-btn complete-btn ${task.completed ? 'completed' : ''}" 
+                                    onclick="toggleComplete('${task.id}')"
+                                    title="${task.completed ? 'Mark as pending' : 'Mark as complete'}"
+                                >
+                                    <svg class="icon" viewBox="0 0 24 24">
+                                        <polyline points="20,6 9,17 4,12"></polyline>
+                                    </svg>
+                                </button>
+                                <button class="task-btn edit-btn" onclick="startEdit('${task.id}')" title="Edit task">
+                                    <svg class="icon" viewBox="0 0 24 24">
+                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                    </svg>
+                                </button>
+                                <button class="task-btn delete-btn" onclick="deleteTask('${task.id}')" title="Delete task">
+                                    <svg class="icon" viewBox="0 0 24 24">
+                                        <polyline points="3,6 5,6 21,6"></polyline>
+                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderTasks() {
+            const pendingTasks = tasks.filter(task => !task.completed);
+            const completedTasks = tasks.filter(task => task.completed);
+
+            // Update counts
+            document.getElementById('pendingCount').textContent = pendingTasks.length;
+            document.getElementById('completedCount').textContent = completedTasks.length;
+            document.getElementById('allCount').textContent = tasks.length;
+            document.getElementById('pendingBadge').textContent = pendingTasks.length;
+            document.getElementById('completedBadge').textContent = completedTasks.length;
+            document.getElementById('allBadge').textContent = tasks.length;
+
+            // Render pending tasks
+            const pendingContainer = document.getElementById('pendingTasks');
+            const pendingEmpty = document.getElementById('pendingEmpty');
+            if (pendingTasks.length === 0) {
+                pendingContainer.innerHTML = '';
+                pendingEmpty.style.display = 'block';
+            } else {
+                pendingEmpty.style.display = 'none';
+                pendingContainer.innerHTML = pendingTasks.map(createTaskCard).join('');
+            }
+
+            // Render completed tasks
+            const completedContainer = document.getElementById('completedTasks');
+            const completedEmpty = document.getElementById('completedEmpty');
+            if (completedTasks.length === 0) {
+                completedContainer.innerHTML = '';
+                completedEmpty.style.display = 'block';
+            } else {
+                completedEmpty.style.display = 'none';
+                completedContainer.innerHTML = completedTasks.map(createTaskCard).join('');
+            }
+
+            // Render all tasks
+            const allContainer = document.getElementById('allTasks');
+            const allEmpty = document.getElementById('allEmpty');
+            if (tasks.length === 0) {
+                allContainer.innerHTML = '';
+                allEmpty.style.display = 'block';
+            } else {
+                allEmpty.style.display = 'none';
+                allContainer.innerHTML = tasks.map(createTaskCard).join('');
+            }
+        }
+
+        function switchTab(tabName) {
+            // Update active tab button
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`${tabName}Tab`).classList.add('active');
+
+            // Update active content
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(`${tabName}Content`).classList.add('active');
+
+            currentTab = tabName;
+        }
+
+        function loadDemoTasks() {
+            const demoTasks = [
+                {
+                    id: generateId(),
+                    name: 'Complete project proposal',
+                    completed: false,
+                    createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000) // 2 hours ago
+                },
+                {
+                    id: generateId(),
+                    name: 'Review team feedback',
+                    completed: true,
+                    createdAt: new Date(Date.now() - 4 * 60 * 60 * 1000), // 4 hours ago
+                    completedAt: new Date(Date.now() - 1 * 60 * 60 * 1000) // 1 hour ago
+                },
+                {
+                    id: generateId(),
+                    name: 'Schedule client meeting',
+                    completed: false,
+                    createdAt: new Date(Date.now() - 1 * 60 * 60 * 1000) // 1 hour ago
+                }
+            ];
+
+            tasks = demoTasks;
+            showToast('Demo Tasks Loaded', 'Sample tasks have been added for demonstration.');
+            renderTasks();
+        }
+
+        // Initialize the app
+        renderTasks();
+    </script>
+</body>
+</html>
